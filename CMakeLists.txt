@@ -4,7 +4,6 @@
 # Copyright (c) 2012 Louis Dionne
 #
 cmake_minimum_required(VERSION 2.8.7)
-set (CMAKE_CXX_STANDARD 11) # for constexpr specifier and other goodies
 
 if (NOT CMAKE_BUILD_TYPE)
 		message(STATUS "No build type selected, default to Release")
@@ -15,12 +14,22 @@ MESSAGE( STATUS "CMAKE_BUILD_TYPE: " ${CMAKE_BUILD_TYPE} )
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules")
 include(AppendCompilerFlags)
 
-
 project(FastPFOR CXX C)
 set(PROJECT_URL "https://github.com/lemire/FastPFOR")
 set(PROJECT_DESCRIPTION "The FastPFOR C++ library: Fast integer compression")
 # Need to bump this when we release a new version.
 set(PROJECT_VERSION "0.1.9")
+
+# Use C++14 when availaible in order to make use of inline static
+list (FIND CMAKE_CXX_COMPILE_FEATURES "cxx_std_14" _index)
+if (${_index} GREATER -1)
+  set (CXX_STD "c++1z")
+  set (CMAKE_CXX_STANDARD 14) # for constexpr specifier, inline static, and other goodies
+else()
+  set (CXX_STD "c++11")
+  set (CMAKE_CXX_STANDARD 11) # for constexpr specifier and other goodies
+endif()
+MESSAGE( STATUS "CXX standard " ${CMAKE_CXX_STANDARD})
 
 include(DetectCPUFeatures)
 #
@@ -66,27 +75,27 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
         message(STATUS "GCC version must be at least 4.7!")
     endif()
     # Uncomment the following lines to see how the code compiles without AVX,SSE4.2 and/or SSE2
-    #set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Ofast -lm  -DNDEBUG -std=c++11 -DHAVE_CXX0X -march=x86-64")
-    #set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Ofast -lm  -DNDEBUG -std=c++11 -DHAVE_CXX0X -march=core2")
-    #set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Ofast -lm  -DNDEBUG -std=c++11 -DHAVE_CXX0X -msse4.2")
-    set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Wcast-align -Ofast -lm  -DNDEBUG -std=c++11 -DHAVE_CXX0X -march=native")
-    set (CMAKE_CXX_FLAGS_DEBUG   "-Wall -Wcast-align -ggdb  -lm  -std=c++11 -DHAVE_CXX0X -march=native")
+    #set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Ofast -lm  -DNDEBUG -std=${CXX_STD} -DHAVE_CXX0X -march=x86-64")
+    #set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Ofast -lm  -DNDEBUG -std=${CXX_STD} -DHAVE_CXX0X -march=core2")
+    #set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Ofast -lm  -DNDEBUG -std=${CXX_STD} -DHAVE_CXX0X -msse4.2")
+    set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Wcast-align -Ofast -lm  -DNDEBUG -std=${CXX_STD} -DHAVE_CXX0X -march=native")
+    set (CMAKE_CXX_FLAGS_DEBUG   "-Wall -Wcast-align -ggdb  -lm  -std=${CXX_STD} -DHAVE_CXX0X -march=native")
     set (CMAKE_C_FLAGS_RELEASE "-Wall -Wcast-align -Ofast -lm  -DNDEBUG -std=c99  -march=native")
     set (CMAKE_C_FLAGS_DEBUG   "-Wall -Wcast-align -ggdb  -lm  -std=c99  -march=native")
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
     if (CXX_COMPILER_VERSION VERSION_LESS 14.0.1)
         message(STATUS "Intel version must be at least 14.0.1!")
     endif()
-    set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Ofast  -DNDEBUG -std=c++11 -DHAVE_CXX0X  -march=native")
-    set (CMAKE_CXX_FLAGS_DEBUG   "-Wall -ggdb   -std=c++11 -DHAVE_CXX0X  -march=native")
+    set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Ofast  -DNDEBUG -std=${CXX_STD} -DHAVE_CXX0X  -march=native")
+    set (CMAKE_CXX_FLAGS_DEBUG   "-Wall -ggdb   -std=${CXX_STD} -DHAVE_CXX0X  -march=native")
     set (CMAKE_C_FLAGS_RELEASE "-Wall -Ofast  -DNDEBUG -std=c99  -march=native")
     set (CMAKE_C_FLAGS_DEBUG   "-Wall -ggdb   -std=c99  -march=native")
 elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
     if (CXX_COMPILER_VERSION VERSION_LESS 4.2.1)
         message(STATUS  "Clang version must be at least 4.2.1!" )
     endif()
-    set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Wcast-align -O3 -DNDEBUG -std=c++11 -DHAVE_CXX0X -msse4.1 -march=native")
-    set (CMAKE_CXX_FLAGS_DEBUG   "-Wall -Wcast-align -ggdb  -std=c++11 -DHAVE_CXX0X -msse4.1 -march=native")
+    set (CMAKE_CXX_FLAGS_RELEASE "-Wall -Wcast-align -O3 -DNDEBUG -std=${CXX_STD} -DHAVE_CXX0X -msse4.1 -march=native")
+    set (CMAKE_CXX_FLAGS_DEBUG   "-Wall -Wcast-align -ggdb  -std=${CXX_STD} -DHAVE_CXX0X -msse4.1 -march=native")
     set (CMAKE_C_FLAGS_RELEASE "-Wall -Wcast-align -O3 -DNDEBUG -std=c99 -msse4.1 -march=native")
     set (CMAKE_C_FLAGS_DEBUG   "-Wall -Wcast-align -ggdb  -std=c99 -msse4.1 -march=native")
 elseif(WIN32)
