@@ -7,6 +7,12 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
+#if CXX_STANDARD == 14
+    #define INLINE inline
+#else
+    #define INLINE 
+#endif
+
 // C headers (sorted)
 #include <errno.h>
 #include <fcntl.h>
