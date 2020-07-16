@@ -59,10 +59,10 @@ public:
   void bit_writer(uint32_t value, uint32_t bits);
 };
 
-BitsWriter::BitsWriter(uint32_t *out)
+INLINE BitsWriter::BitsWriter(uint32_t *out)
     : data(out), Fill(0), buffer(0), written(0) {}
 
-void BitsWriter::bit_flush() {
+INLINE void BitsWriter::bit_flush() {
   if (Fill == 0)
     return;
 
@@ -82,7 +82,7 @@ void BitsWriter::bit_flush() {
   buffer = 0;
   Fill = 0;
 }
-void BitsWriter::bit_writer(uint32_t value, uint32_t bits) {
+INLINE void BitsWriter::bit_writer(uint32_t value, uint32_t bits) {
   if (bits == 0)
     return;
 
@@ -130,7 +130,7 @@ public:
                                  uint32_t &pSize);
 };
 
-VSEncoding::VSEncoding(uint32_t *lens, uint32_t *zlens, uint32_t size,
+INLINE VSEncoding::VSEncoding(uint32_t *lens, uint32_t *zlens, uint32_t size,
                        bool cflag)
     :
 
@@ -142,7 +142,7 @@ VSEncoding::VSEncoding(uint32_t *lens, uint32_t *zlens, uint32_t size,
     maxBlk = posszLens[poss_sz - 1];
 }
 
-uint32_t *VSEncoding::compute_OptPartition(uint32_t *seq, uint32_t len,
+INLINE uint32_t *VSEncoding::compute_OptPartition(uint32_t *seq, uint32_t len,
                                            uint32_t fixCost, uint32_t &pSize) {
   int *SSSP;
   uint32_t i;
@@ -411,34 +411,34 @@ static __vseblocks_unpacker __vseblocks_unpack[] = {NULL,
  * There is asymmetry between possible lenghts ofblocks
  * if they are formed by zeros or larger numbers.
  */
-static uint32_t __vseblocks_possLens[] = {1, 2,  3,  4,  5,  6,  7,  8,
-                                          9, 10, 11, 12, 13, 14, 15, 16};
+INLINE static uint32_t __vseblocks_possLens[] = {1, 2,  3,  4,  5,  6,  7,  8,
+                                                 9, 10, 11, 12, 13, 14, 15, 16};
 
-static uint32_t __vseblocks_posszLens[] = {1, 2,  3,  4,  5,  6,  7,  8,
-                                           9, 10, 11, 12, 13, 14, 16, 32};
+INLINE static uint32_t __vseblocks_posszLens[] = {1, 2,  3,  4,  5,  6,  7,  8,
+                                                  9, 10, 11, 12, 13, 14, 16, 32};
 
-static uint32_t __vseblocks_remapLogs[] = {
+INLINE static uint32_t __vseblocks_remapLogs[] = {
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 16, 16, 16, 16,
     20, 20, 20, 20, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32};
 
-static uint32_t __vseblocks_codeLogs[] = {
+INLINE static uint32_t __vseblocks_codeLogs[] = {
     0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 13, 13, 13,
     14, 14, 14, 14, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
 
-static uint32_t __vseblocks_possLogs[] = {0, 1, 2,  3,  4,  5,  6,  7,
-                                          8, 9, 10, 11, 12, 16, 20, 32};
+INLINE static uint32_t __vseblocks_possLogs[] = {0, 1, 2,  3,  4,  5,  6,  7,
+                                                 8, 9, 10, 11, 12, 16, 20, 32};
 
 #ifdef USE_BOOST_SHAREDPTR
 static VSEncodingPtr __vseblocks = VSEncodingPtr(
     new VSEncoding(&__vseblocks_possLens[0], &__vseblocks_posszLens[0],
                    VSEncodingBlocks::VSEBLOCKS_LENS_LEN, false));
 #else
-static VSEncoding *__vseblocks =
+INLINE static VSEncoding *__vseblocks =
     new VSEncoding(&__vseblocks_possLens[0], &__vseblocks_posszLens[0],
                    VSEncodingBlocks::VSEBLOCKS_LENS_LEN, false);
 #endif /* USE_BOOST_SHAREDPTR */
 
-void VSEncodingBlocks::encodeVS(uint32_t len, const uint32_t *in,
+INLINE void VSEncodingBlocks::encodeVS(uint32_t len, const uint32_t *in,
                                 uint32_t &size, uint32_t *out) {
   uint32_t i;
   uint32_t j;
@@ -588,7 +588,7 @@ void VSEncodingBlocks::encodeVS(uint32_t len, const uint32_t *in,
   delete wt;
 }
 
-const uint32_t *VSEncodingBlocks::decodeVS(uint32_t len, const uint32_t *in,
+INLINE const uint32_t *VSEncodingBlocks::decodeVS(uint32_t len, const uint32_t *in,
                                            uint32_t *out, uint32_t *aux) {
   int ntotal;
   uint32_t nblk;
@@ -683,7 +683,7 @@ const uint32_t *VSEncodingBlocks::decodeVS(uint32_t len, const uint32_t *in,
   return addr;
 }
 
-void VSEncodingBlocks::encodeArray(const uint32_t *in, const size_t len,
+INLINE void VSEncodingBlocks::encodeArray(const uint32_t *in, const size_t len,
                                    uint32_t *out, size_t &nvalue) {
 #ifndef NDEBUG
   const uint32_t *const initout(out);
@@ -711,7 +711,7 @@ void VSEncodingBlocks::encodeArray(const uint32_t *in, const size_t len,
                                                     << csize);
 }
 
-const uint32_t *VSEncodingBlocks::decodeArray(const uint32_t *in,
+INLINE const uint32_t *VSEncodingBlocks::decodeArray(const uint32_t *in,
 #ifndef NDEBUG
                                               const size_t len, uint32_t *out,
                                               size_t &nvalue) {
@@ -748,7 +748,7 @@ const uint32_t *VSEncodingBlocks::decodeArray(const uint32_t *in,
 
 /* --- Intra functions below --- */
 
-void __vseblocks_unpack1(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack1(uint32_t *__restrict__ out,
                          const uint32_t *__restrict__ in, uint32_t bs) {
   // for (uint32_t i = 0; i < bs; i += 32, out += 32, in += 1) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 1,
@@ -788,7 +788,7 @@ void __vseblocks_unpack1(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack2(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack2(uint32_t *__restrict__ out,
                          const uint32_t *__restrict__ in, uint32_t bs) {
   // for (uint32_t i = 0; i < bs; i += 32, out += 32, in += 2) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 2, --bs) {
@@ -827,7 +827,7 @@ void __vseblocks_unpack2(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack3(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack3(uint32_t *__restrict__ out,
                          const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 3, --bs) {
     out[0] = in[0] >> 29;
@@ -867,7 +867,7 @@ void __vseblocks_unpack3(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack4(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack4(uint32_t *__restrict__ out,
                          const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 4, --bs) {
     out[0] = in[0] >> 28;
@@ -905,7 +905,7 @@ void __vseblocks_unpack4(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack5(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack5(uint32_t *__restrict__ out,
                          const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 5, --bs) {
     out[0] = in[0] >> 27;
@@ -947,7 +947,7 @@ void __vseblocks_unpack5(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack6(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack6(uint32_t *__restrict__ out,
                          const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 6, --bs) {
     out[0] = in[0] >> 26;
@@ -989,7 +989,7 @@ void __vseblocks_unpack6(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack7(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack7(uint32_t *__restrict__ out,
                          const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 7, --bs) {
     out[0] = in[0] >> 25;
@@ -1033,7 +1033,7 @@ void __vseblocks_unpack7(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack8(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack8(uint32_t *__restrict__ out,
                          const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 8, --bs) {
     out[0] = in[0] >> 24;
@@ -1071,7 +1071,7 @@ void __vseblocks_unpack8(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack9(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack9(uint32_t *__restrict__ out,
                          const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 9, --bs) {
     out[0] = in[0] >> 23;
@@ -1117,7 +1117,7 @@ void __vseblocks_unpack9(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack10(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack10(uint32_t *__restrict__ out,
                           const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 10, --bs) {
     out[0] = in[0] >> 22;
@@ -1163,7 +1163,7 @@ void __vseblocks_unpack10(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack11(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack11(uint32_t *__restrict__ out,
                           const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 11, --bs) {
     out[0] = in[0] >> 21;
@@ -1211,7 +1211,7 @@ void __vseblocks_unpack11(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack12(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack12(uint32_t *__restrict__ out,
                           const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 12, --bs) {
     out[0] = in[0] >> 20;
@@ -1257,7 +1257,7 @@ void __vseblocks_unpack12(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack16(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack16(uint32_t *__restrict__ out,
                           const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 16, --bs) {
     out[0] = in[0] >> 16;
@@ -1295,7 +1295,7 @@ void __vseblocks_unpack16(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack20(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack20(uint32_t *__restrict__ out,
                           const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 31U) / 32U; bs > 0; out += 32, in += 20, --bs) {
     out[0] = in[0] >> 12;
@@ -1349,7 +1349,7 @@ void __vseblocks_unpack20(uint32_t *__restrict__ out,
   }
 }
 
-void __vseblocks_unpack32(uint32_t *__restrict__ out,
+INLINE void __vseblocks_unpack32(uint32_t *__restrict__ out,
                           const uint32_t *__restrict__ in, uint32_t bs) {
   for (bs = (bs + 15U) / 16U; bs > 0U; out += 16, in += 16, --bs) {
     __vseblocks_copy16(in, out);

@@ -149,7 +149,7 @@ static inline CodecMap initializefactory() {
   return map;
 }
 
-CodecMap CODECFactory::scodecmap = initializefactory();
+INLINE CodecMap CODECFactory::scodecmap = initializefactory();
 
 } // namespace FastPFor
 

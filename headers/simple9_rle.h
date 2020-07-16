@@ -255,10 +255,10 @@ public:
 
 // --------------------------- selector code:  0,  1,  2,  3,  4,  5,  6,  7,
 // 8,  9,  A,  B,  C,  D,  E,  F
-const uint32_t Simple9_Codec::intNumber[] = {28, 14, 9, 7, 5, 4, 3, 2,
-                                             1,  1,  1, 1, 1, 1, 1, 1};
-const uint32_t Simple9_Codec::bitLength[] = {1,  2,  3,  4,  5,  7,  9,  14,
-                                             31, 31, 31, 31, 31, 31, 31, 31};
+INLINE const uint32_t Simple9_Codec::intNumber[] = {28, 14, 9, 7, 5, 4, 3, 2,
+                                                    1,  1,  1, 1, 1, 1, 1, 1};
+INLINE const uint32_t Simple9_Codec::bitLength[] = {1,  2,  3,  4,  5,  7,  9,  14,
+                                                    31, 31, 31, 31, 31, 31, 31, 31};
 
 /**
 * If MarkLength is true, than the number of symbols is written
